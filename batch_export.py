@@ -81,7 +81,7 @@ def search_database(title, mydb) -> tuple:
     return results
 
 
-def make_m3u_entry(list_entry):
+def make_m3u_entry(list_entry) -> str:
     """
     Creates two lines for the m3u playlist. The first line is the title information and the second line is the file location.
 
@@ -97,7 +97,7 @@ def make_m3u_entry(list_entry):
     return "{}{}\n{}\n".format(start_line, list_entry[0][0], list_entry[0][1])
 
 
-def create_m3u(playlist):
+def create_m3u(playlist) -> None:
     """
     This function creates an m3u playlist file from a list of entries. If there are multiple entries in one line
     the program will promt a warning and skip this line.
