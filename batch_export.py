@@ -64,6 +64,7 @@ def create_m3u(playlist):
             if len(i) == 1:
                 f.write(make_m3u_entry(i))
             else:
+                print("WARNING: Multiple Entrys detected")
                 pass
 
 def main():
