@@ -1,8 +1,12 @@
 import mysql.connector
 from getpass import getpass
+import csv
 
 def read_list() -> list:
-    """"""
+    """
+    Liest eine Liste von Songs aus einer CSV-Datei und gibt sie als Liste zurück.
+    :return: Eine Liste von Songs.
+    """
     songs = []
     with open('list.csv', 'r') as f:
         for line in f:
@@ -10,26 +14,25 @@ def read_list() -> list:
         
     return songs
 
-def search_database(title) -> str:
-    """"""
-    # Connect to the database
-    # host = input("Host: ")
-    # user = input("User: ")
+def connect_to_database():
     password = getpass("Enter your Password: ")
     # host = input("Host: ")
     
     mydb = mysql.connector.connect(
         host="prodserv4",
-        user="digas",
+        user="david",
         password=password,
         database="digas"
     )
+    return mydb
 
-    # Create a cursor object
+
+def search_database(title, mydb) -> str:
+    """"""
     mycursor = mydb.cursor()
 
-    # Execute the query
-    sql = "SELECT * FROM musik_934_t and musik_934 WHERE (TITLE LIKE '%s');"
+    # Execute the result
+    sql = "SELECT * FROM musik_934 WHERE (TITLE LIKE %s);"
     val = ("%" + title + "%", )
     mycursor.execute(sql, val)
 
@@ -37,11 +40,12 @@ def search_database(title) -> str:
     results = mycursor.fetchall()
 
     # return results
+    return results
 
-    # Print the results
-    for result in results:
-        print(result)
-    return "path_to_file_on_local_server"
+    # # Print the results
+    # for result in results:
+    #     print(result)
+    # return "path_to_file_on_local_server"
 
 
 
@@ -52,9 +56,20 @@ def creat_m3u():
 
 
 def main():
-    test = read_list()
-    for song in test:
-        search_database(song)
+
+    titles = read_list()
+
+    database = connect_to_database()
+    result = []
+
+    for song in titles:
+        entry = search_database(song, database)
+        result.append(entry)
+
+    with open('ergebnis.csv', 'w', newline='') as f:
+        writer = csv.writer(f)
+        writer.writerows(result)
+            
 
 if __name__ == "__main__":
     main()
