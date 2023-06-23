@@ -1,5 +1,18 @@
+"""
+Digas Batch Export to m3u 0.9.1
+
+This is a little program to search for multiple entries in a digas SQL databes. The results of the querys get written to an m3u file to import into an
+audio player or a DAW that can read m3us such as Magix Sequoia
+
+Author: Johannes Schnurrenberger 
+Last Change 23.06.2023
+
+TO DO: Add error handling
+"""
+
 import mysql.connector
 from getpass import getpass
+
 
 def read_list() -> list:
     """
