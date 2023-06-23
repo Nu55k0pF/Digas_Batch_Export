@@ -14,7 +14,9 @@ def read_list() -> list:
         
     return songs
 
+
 def connect_to_database():
+    """"""
     password = getpass("Enter your Password: ")
     # host = input("Host: ")
     
@@ -32,7 +34,7 @@ def search_database(title, mydb) -> str:
     mycursor = mydb.cursor()
 
     # Execute the result
-    sql = "SELECT * FROM musik_934 WHERE (TITLE LIKE %s);"
+    sql = "SELECT TITLE, FILENAME FROM musik_934 WHERE (TITLE LIKE %s);"
     val = ("%" + title + "%", )
     mycursor.execute(sql, val)
 
@@ -42,14 +44,6 @@ def search_database(title, mydb) -> str:
     # return results
     return results
 
-    # # Print the results
-    # for result in results:
-    #     print(result)
-    # return "path_to_file_on_local_server"
-
-
-
-## Save all paths in list of lists
 
 def creat_m3u():
     """schreibt eine m3u playliste"""
@@ -64,11 +58,16 @@ def main():
 
     for song in titles:
         entry = search_database(song, database)
+        print(entry)
         result.append(entry)
+
+    # # for list in result:
+    #     print(list)
 
     with open('ergebnis.csv', 'w', newline='') as f:
         writer = csv.writer(f)
-        writer.writerows(result)
+        for row in result:
+            writer.writerow(row)
             
 
 if __name__ == "__main__":
