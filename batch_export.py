@@ -45,9 +45,26 @@ def search_database(title, mydb) -> str:
     return results
 
 
-def creat_m3u():
-    """schreibt eine m3u playliste"""
+def make_m3u_entry(list_entry):
+    """
+    Creates two lines for the m3u playlist. 1. is the title information, 2. line is the file location
+    """
+    start_line = "#EXTINF:"
 
+    return "{}{}\n{}\n".format(start_line, list_entry[0][0], list_entry[0][1])
+
+
+def create_m3u(playlist):
+
+    header = "#EXTM3U"
+
+    with open("./playlist.m3u" , "a", encoding="utf-8") as f:
+        f.write(header)
+        for i in playlist:
+            if len(i) == 1:
+                f.write(make_m3u_entry(i))
+            else:
+                pass
 
 def main():
 
@@ -58,16 +75,15 @@ def main():
 
     for song in titles:
         entry = search_database(song, database)
-        print(entry)
         result.append(entry)
 
-    # # for list in result:
-    #     print(list)
 
     with open('ergebnis.csv', 'w', newline='') as f:
         writer = csv.writer(f)
         for row in result:
             writer.writerow(row)
+    
+    create_m3u(result)
             
 
 if __name__ == "__main__":
