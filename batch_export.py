@@ -81,6 +81,20 @@ def search_database(title, mydb) -> tuple:
     return results
 
 
+def search_db_with_ID(musicid, mydb) -> tuple:
+    ## TODO: Fishish implementations
+    # Search funktion if MusicID is provided
+    sql = "SELECT REFNR from Musik_934 where (Musicid like %s);"
+    val = [musicid]
+    mycursor.execute(sql, val)
+    results1 = mycursor.fetchall()
+    info.append(results1[0][0])
+
+    sql = "SELECT musik_934.filename, musik_934_t.performer FROM Musik_934 INNER JOIN musik_934_t WHERE (REFNR like %s);"
+    mycursor.execute(sql, results1[0][0])
+    results2 = mycursor.fetchall()
+
+
 def make_m3u_entry(list_entry) -> str:
     """
     Creates two lines for the m3u playlist. The first line is the title information and the second line is the file location.
