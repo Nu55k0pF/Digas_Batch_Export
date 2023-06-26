@@ -114,7 +114,7 @@ def make_m3u_entry(list_entry) -> str:
     
     start_line = "#EXTINF:-1,"
 
-    return "{} {} - {}\n{}\n".format(start_line, list_entry[0][0], list_entry[0][1],list_entry[0][2])
+    return "{} {} - {}\n{}\n".format(start_line, list_entry[0][1], list_entry[0][0],list_entry[0][2])
 
 
 def create_m3u(playlist) -> None:
@@ -131,7 +131,7 @@ def create_m3u(playlist) -> None:
 
     header = "#EXTM3U\n"
 
-    with open("./playlist.m3u" , "a", encoding="utf-8") as f:
+    with open("./playlist.m3u" , "w", encoding="utf-8") as f:
         f.write(header)
         for i in playlist:
             if len(i) == 1:
