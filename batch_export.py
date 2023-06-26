@@ -12,6 +12,7 @@ TO DO: Add error handling
 
 import mysql.connector
 from getpass import getpass
+import re
 
 
 def read_list() -> list:
@@ -55,33 +56,38 @@ def connect_to_database() -> mysql.connector:
     return mydb
 
 
-def search_database(title, mydb) -> tuple:
+def search_database(line, mydb) -> tuple:
     """
     This function searches for a title in the musik_934 database and returns the title and filename of all matching records.
 
     Args:
-        title (str): A string representing the title to search for.
+        line (str): A string representing the title and artist seperated by \t to search for.
         mydb (mysql.connector.connection_cext.CMySQLConnection): A connection object representing the database.
 
     Returns:
-        tuple: A tuple containing the title and filename of all matching records.
+        tuple: A tuple containing the title, performer and filename of all matching records.
     """
 
     mycursor = mydb.cursor()
-
+    
     # Execute the result
-    sql = "SELECT TITLE, FILENAME FROM musik_934 WHERE (TITLE LIKE %s);"
-    val = ("%" + title + "%", )
-    mycursor.execute(sql, val)
+    # sql = "SELECT TITLE, FILENAME FROM musik_934 WHERE (TITLE LIKE %s);"
+    title_artist = re.split(r'\t+', line)
+    artist = (title_artist[0].strip())
+    title = (title_artist[1].strip())
+    sql = "SELECT musik_934.TITLE, musik_934_t.performer,musik_934.FILENAME FROM musik_934 INNER JOIN musik_934_t ON musik_934.REFNR = musik_934_t.REFNR WHERE (musik_934.title = '{}') AND (musik_934_t.performer = '{}');".format(title, artist)
+    print(sql)
+    mycursor.execute(sql)
 
     # Fetch the results
     results = mycursor.fetchall()
+    print(results)
 
     # return results
     return results
 
 
-def search_db_with_ID(musicid, mydb) -> tuple:
+# def search_db_with_ID(musicid, mydb) -> tuple:
     ## TODO: Fishish implementations
     # Search funktion if MusicID is provided
     sql = "SELECT REFNR from Musik_934 where (Musicid like %s);"
@@ -106,9 +112,9 @@ def make_m3u_entry(list_entry) -> str:
         str: A string containing two lines for the m3u playlist.
     """
     
-    start_line = "#EXTINF:"
+    start_line = "#EXTINF:-1,"
 
-    return "{}{}\n{}\n".format(start_line, list_entry[0][0], list_entry[0][1])
+    return "{} {} - {}\n{}\n".format(start_line, list_entry[0][0], list_entry[0][1],list_entry[0][2])
 
 
 def create_m3u(playlist) -> None:
@@ -123,7 +129,7 @@ def create_m3u(playlist) -> None:
         None
     """
 
-    header = "#EXTM3U"
+    header = "#EXTM3U\n"
 
     with open("./playlist.m3u" , "a", encoding="utf-8") as f:
         f.write(header)
